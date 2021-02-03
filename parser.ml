@@ -80,10 +80,9 @@ let rec many p =
 
 let choose xs = List.fold_left (<|>) fail xs
 
-let space = 
-    Fun.const () <$> (char ' ' <|> char '\n' <|> char '\t')
+let space = () <$ (char ' ' <|> char '\n' <|> char '\t')
 
-let spaces = Fun.const () <$> many space
+let spaces = () <$ many space
 
 let digit = 
     let is_digit = function 
@@ -110,14 +109,10 @@ let float =
 
 let number = float <|> (map float_of_int integer)
 
-let signed_number = (fun result -> -.result) <$> char '-' *> number
+let signed_number = (~-.) <$> char '-' *> number
 
-let string str =
-        str 
-        |> String.to_list
-        |> List.map char 
-        |> sequence
-        |> map String.of_list
+let string =
+    String.to_list >> List.map char >> sequence >> map String.of_list
 
 let rec fix f = f (fun x -> (fix f) x)
 
