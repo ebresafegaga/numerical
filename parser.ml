@@ -3,7 +3,9 @@
    A MINIMAL PARSER COMBINATOR LIBRARY 
 *)
 
-let (>>) f g a = a |> f |> g 
+let (>>) f g a = a |> f |> g
+
+let rec fix f = f (fun x -> (fix f) x)
 
 module String = struct 
     include String
@@ -75,6 +77,7 @@ let eof : unit parser = fun str ->
 let sequence (xs: 'a parser list) : 'a list parser = 
     List.fold_right (fun a s -> List.cons <$> a <*> s) xs (pure [])
 
+(* TODO : replace lazy applicative operator with  fix *)
 let rec many p = 
     pure List.cons <*> p <<*>> lazy (many p) <|> pure []
 
@@ -114,14 +117,11 @@ let signed_number = (~-.) <$> char '-' *> number
 let string =
     String.to_list >> List.map char >> sequence >> map String.of_list
 
-let rec fix f = f (fun x -> (fix f) x)
-
 let rec chain op e =
     (e >>= fun e' -> 
            op >>= fun op' -> 
            chain op e >>= fun rest -> 
            pure (op' e' rest)) <|> e
-
 
 let runParser p str = 
     match p str with 
