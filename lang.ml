@@ -23,6 +23,14 @@ type exp =
     | Cos of exp 
     | Sin of exp
 
+let mul a b = Mul (a, b)
+let sum a b = Sum (a, b) 
+let diff a b = Diff (a, b)
+let pow a x = Pow (a, x) 
+let sin' x = Sin x
+let cos' x = Cos x
+let constant x = Constant x
+
 let rec eval exp x = 
     let eval' = Fun.flip eval x in
     match exp with 
@@ -40,20 +48,16 @@ let rec eval exp x =
 open Parser
 
 let binary exp = 
-    let mul a b = Mul (a, b) in
-    let sum a b = Sum (a, b) in
-    let diff a b = Diff (a, b) in
-    let pow a x = Pow (a, x) in
-    let mulp = map (Fun.const mul) (char '*') in
-    let sump = map (Fun.const sum) (char '+') in
-    let diffp = map (Fun.const diff) (char '-') in
-    let powp = map (Fun.const pow) (char '^') in 
+    let mulp = mul <$ (char '*') in
+    let sump = sum <$ (char '+') in
+    let diffp = diff <$ (char '-') in
+    let powp = pow <$ (char '^') in 
     chain (mulp <|> sump <|> diffp <|> powp) exp
 
 let primary exp = 
     (char '(' *> spaces *> exp <* spaces  <* char ')') <|>
-    (map (Fun.const Variable) (char 'x')) <|>
-    (map (fun x -> Constant x) number) 
+    (Variable <$ (char 'x')) <|>
+    (constant <$> number) 
 
 let exp = 
     fix @@ fun exp -> 
