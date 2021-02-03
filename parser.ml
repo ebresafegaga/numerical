@@ -68,8 +68,8 @@ let (<|>) (pa : 'a parser) (pb: 'a parser) : 'a parser = fun str ->
     | None -> pb str
 
 let eof : unit parser = fun str -> 
-    match String.to_list str with 
-    | [] -> Some ((), "")
+    match str with 
+    | "" -> Some ((), str)
     | _ -> None 
 
 let sequence (xs: 'a parser list) : 'a list parser = 

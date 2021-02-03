@@ -55,6 +55,8 @@ let main f c a b =
     in 
     progn 1 a b
 
+(* TODO add flags to specify falsi or bisection *)
+
 let () = 
     print_string "f(x) =  " ;
     let fx = read_line () |> String.trim  in
