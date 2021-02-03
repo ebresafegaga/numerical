@@ -31,6 +31,8 @@ let (<$>) (f: 'a -> 'b) (pa: 'a parser) : 'b parser = fun str ->
     | Some (x, rest) -> Some (f x, rest)
     | None -> None
 
+let ($>) p value = (Fun.const value) <$> p
+
 let map = (<$>)
 
 let (<*>) (pf : ('a -> 'b) parser) (pa : 'a parser) : 'b parser = fun str -> 
