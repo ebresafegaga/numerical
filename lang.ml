@@ -61,6 +61,6 @@ let primary exp =
 
 let exp = 
     fix @@ fun exp -> 
-        ((fun e -> Cos e) <$> (string "cos") *> spaces *> exp) <|>
-        ((fun e -> Sin e) <$> (string "sin") *> spaces *> exp) <|> 
+        (cos' <$> (string "cos") *> spaces *> exp) <|>
+        (sin' <$> (string "sin") *> spaces *> exp) <|> 
         (binary (spaces *> (primary exp) <* spaces)) 
