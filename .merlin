@@ -1,4 +1,0 @@
-EXCLUDE_QUERY_DIR
-B _build/default/.main.eobjs/byte
-S .
-FLG -open Dune__exe -ccopt -static

@@ -1,0 +1,32 @@
+EXCLUDE_QUERY_DIR
+B /home/ebresafegaga/.opam/4.11.1/lib/alcotest
+B /home/ebresafegaga/.opam/4.11.1/lib/alcotest/engine
+B /home/ebresafegaga/.opam/4.11.1/lib/astring
+B /home/ebresafegaga/.opam/4.11.1/lib/bytes
+B /home/ebresafegaga/.opam/4.11.1/lib/cmdliner
+B /home/ebresafegaga/.opam/4.11.1/lib/fmt
+B /home/ebresafegaga/.opam/4.11.1/lib/ocaml
+B /home/ebresafegaga/.opam/4.11.1/lib/re
+B /home/ebresafegaga/.opam/4.11.1/lib/seq
+B /home/ebresafegaga/.opam/4.11.1/lib/stdlib-shims
+B /home/ebresafegaga/.opam/4.11.1/lib/uchar
+B /home/ebresafegaga/.opam/4.11.1/lib/uuidm
+B /home/ebresafegaga/.opam/4.11.1/lib/uutf
+B ../_build/default/lib/.numerical.objs/byte
+B ../_build/default/test/.main.eobjs/byte
+S /home/ebresafegaga/.opam/4.11.1/lib/alcotest
+S /home/ebresafegaga/.opam/4.11.1/lib/alcotest/engine
+S /home/ebresafegaga/.opam/4.11.1/lib/astring
+S /home/ebresafegaga/.opam/4.11.1/lib/bytes
+S /home/ebresafegaga/.opam/4.11.1/lib/cmdliner
+S /home/ebresafegaga/.opam/4.11.1/lib/fmt
+S /home/ebresafegaga/.opam/4.11.1/lib/ocaml
+S /home/ebresafegaga/.opam/4.11.1/lib/re
+S /home/ebresafegaga/.opam/4.11.1/lib/seq
+S /home/ebresafegaga/.opam/4.11.1/lib/stdlib-shims
+S /home/ebresafegaga/.opam/4.11.1/lib/uchar
+S /home/ebresafegaga/.opam/4.11.1/lib/uuidm
+S /home/ebresafegaga/.opam/4.11.1/lib/uutf
+S ../lib
+S .
+FLG -w -40

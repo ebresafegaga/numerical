@@ -1,8 +1,5 @@
+open Numerical
 
-module Sign = struct 
-    type t = Positive | Negative 
-    let sign (x : float) = if x < 0. then Negative else Positive
-end
 
 (*
     Error = b-c / 2
@@ -19,16 +16,20 @@ type result =
 
 type endpoint = {aP : float; bP : float }
 
+(* fa fc fb *)
+exception BisectionFailed of float * float * float
+
 let bisect f calc {aP = a; bP = b} k =
+    let open Bracketing in
     let fa, fb = f a, f b in
     let c = calc fa fb a b in
     let fc = f c in
     let fa_fc = fa *. fc in
     let fb_fc = fb *. fc in
     match Sign.sign fa_fc, Sign.sign fb_fc with 
-    | Positive, Negative -> (k { a; b; c; fa; fb; fc }), { aP = c; bP = b} 
-    | Negative, Positive -> (k { a; b; c; fa; fb; fc }), { aP = a; bP = c}
-    | _ -> failwith "bisection failed"
+    | Positive, Negative -> k { a; b; c; fa; fb; fc } ; { aP = c; bP = b} 
+    | Negative, Positive -> k { a; b; c; fa; fb; fc } ; { aP = a; bP = c}
+    | _ -> raise (BisectionFailed (fa, fc, fb))
 
 let bisect_calc _fa _fb a b = (a +. b) /. 2.
 let falsi_calc fa fb a b = 
@@ -46,12 +47,18 @@ let main f c a b =
     let rec progn n a b = 
         Printf.printf "\n\n"  ;
         Printf.printf "ITERATION %d \n" n ;
-        let _, {aP = nextA; bP = nextB} = bisect f c { aP = a; bP = b } print in
-        print_string "Continue? " ;
-        let s = read_line () in   
-        match String.lowercase_ascii s with 
-        | "y" | "yes" -> progn (n+1) nextA nextB
-        | _ -> ()
+        match bisect f c {aP = a; bP = b} print with 
+        | {aP = nextA; bP = nextB} -> 
+            print_string "Continue? " ;
+            let s = read_line () in   
+            match String.lowercase_ascii s with 
+            | "y" | "yes" -> progn (n+1) nextA nextB
+            | _ -> ()
+        (* Why doens't this catch the exception? *)
+        | exception (BisectionFailed _) -> 
+            Printf.printf 
+                "Bisection Failed. \n 
+                 Make sure you entered the correct equation or endpoints."
     in 
     progn 1 a b
 

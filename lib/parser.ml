@@ -3,8 +3,12 @@
    A MINIMAL PARSER COMBINATOR LIBRARY 
 *)
 
+(* Some utilities *)
+
+(* function composition: g . f *)
 let (>>) f g a = a |> f |> g
 
+(* Applicative-order fixed point combinator *)
 let rec fix f = f (fun x -> (fix f) x)
 
 module String = struct 
@@ -111,8 +115,6 @@ let float =
     <*> integer <*> char '.' <*> digits
 
 let number = float <|> (map float_of_int integer)
-
-let signed_number = (~-.) <$> char '-' *> number
 
 let string =
     String.to_list >> List.map char >> sequence >> map String.of_list
