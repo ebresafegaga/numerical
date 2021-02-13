@@ -23,11 +23,12 @@ let bisect_iterate (a, b) f =
         let result = bisect endpoints f in 
         Some (result, bisect_next result))
 
-let rec within eps seq =
+let rec within seq eps =
     let open Seq in 
     match seq () with 
     | Cons ({ c = a } as x, xs) -> 
         (match xs () with 
-        | Cons ({ c = b } as y, rest) when Float.abs (b -. a) <= eps -> [ x;y ]
-        | _ -> x :: within eps xs)
+        | Cons ({ c = b } as y, rest) when Float.abs (b -. a) <= eps -> 
+            [ x;y ] |> List.to_seq
+        | _ -> Seq.cons x (within xs eps))
     | _ -> failwith "seq should be infinite"

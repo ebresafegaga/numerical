@@ -47,11 +47,11 @@ let num func iter a b within =
     in
     let result = Bracketing.bisect_iterate (a, b) f in
     within
-    |> Option.fold ~none:(Seq.take iter result) ~some:(fun w -> Bracketing.within w result)
-    |> List.iteri (fun index result -> 
+    |> Option.fold ~none:(Seq.take iter result) ~some:(Bracketing.within result)
+    |> Seq.iteri (fun index result -> 
         Printf.printf "\t Iteration %d \n" (succ index) ;
         Bracketing.pp result ;
-        Printf.printf "\n" )
+        Printf.printf "\n")
 
 let () = 
     Arg.parse options anonymous usage;
