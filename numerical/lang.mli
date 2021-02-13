@@ -3,4 +3,4 @@ type exp
 
 val eval : exp -> float -> float
 
-val exp : exp Parser.parser
+val parse_exp : exp Parser.parser

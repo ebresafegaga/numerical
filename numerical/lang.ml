@@ -59,7 +59,7 @@ let primary exp =
     (Variable <$ (char 'x')) <|>
     (constant <$> number) 
 
-let exp = 
+let parse_exp = 
     fix @@ fun exp -> 
         (cos' <$> (string "cos") *> spaces *> exp) <|>
         (sin' <$> (string "sin") *> spaces *> exp) <|> 

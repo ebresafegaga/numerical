@@ -21,6 +21,7 @@ B /home/ebresafegaga/.opam/4.11.1/lib/uuidm
 B /home/ebresafegaga/.opam/4.11.1/lib/uutf
 B ../_build/default/numerical/.numerical.objs/byte
 B ../_build/default/test/.main.eobjs/byte
+B ../_build/default/util/.util.objs/byte
 S /home/ebresafegaga/.opam/4.11.1/lib/alcotest
 S /home/ebresafegaga/.opam/4.11.1/lib/alcotest/engine
 S /home/ebresafegaga/.opam/4.11.1/lib/astring
@@ -43,4 +44,5 @@ S /home/ebresafegaga/.opam/4.11.1/lib/uuidm
 S /home/ebresafegaga/.opam/4.11.1/lib/uutf
 S ../numerical
 S .
+S ../util
 FLG -w -40

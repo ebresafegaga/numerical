@@ -1,4 +1,0 @@
-(executable
-    (name main)
-    (libraries numerical)
-    (flags -ccopt -static))
