@@ -1,0 +1,4 @@
+EXCLUDE_QUERY_DIR
+B ../_build/default/numerical/.numerical.objs/byte
+S .
+FLG -open Numerical -w -40

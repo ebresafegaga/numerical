@@ -31,7 +31,7 @@ let sin' x = Sin x
 let cos' x = Cos x
 let constant x = Constant x
 
-let rec eval exp x = 
+let rec eval exp x =
     let eval' = Fun.flip eval x in
     match exp with 
     | Constant value -> value 

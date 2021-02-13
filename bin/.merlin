@@ -1,6 +1,6 @@
 EXCLUDE_QUERY_DIR
 B ../_build/default/bin/.main.eobjs/byte
-B ../_build/default/lib/.numerical.objs/byte
+B ../_build/default/numerical/.numerical.objs/byte
 S .
-S ../lib
+S ../numerical
 FLG -ccopt -static
