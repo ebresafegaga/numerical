@@ -1,4 +1,7 @@
-type result = { a : float; b : float; c : float; fa: float; fb: float; fc: float }
+
+type result = 
+    { a : float; b : float; c : float; 
+      fa: float; fb: float; fc: float }
 
 let pp { a; b; c; fa; fb; fc } = 
     Printf.printf "a = %f \t c = %f \t b = %f \n" a c b ; 
@@ -23,8 +26,8 @@ let bisect_iterate (a, b) f =
 let rec within eps seq =
     let open Seq in 
     match seq () with 
-    | Cons (a, xs) -> 
+    | Cons ({ c = a } as x, xs) -> 
         (match xs () with 
-        | Cons (b, rest) when Float.abs (b -. a) <= eps -> b 
-        | _ -> within eps xs)
+        | Cons ({ c = b } as y, rest) when Float.abs (b -. a) <= eps -> [ x;y ]
+        | _ -> x :: within eps xs)
     | _ -> failwith "seq should be infinite"

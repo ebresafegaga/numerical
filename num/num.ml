@@ -5,6 +5,7 @@ let func = ref ""
 let iter = ref 0 
 let a = ref 0. 
 let b = ref 0.
+let within : float option ref = ref None
 
 
 let usage = "Usage: num [options]"
@@ -21,6 +22,10 @@ let options = Arg.align
        ( "--iterations", 
          Arg.Set_int iter, 
          " Specify the number of iterations");
+
+       ( "--within", 
+         Arg.Float (fun w -> within := Some w), 
+         " Specify the error. Iteration stops when the abolute error is less than this value");
     
        ( "-a", 
          Arg.Set_float a, 
@@ -31,7 +36,7 @@ let options = Arg.align
          " Specify the right endpoint for a bisection")
        ]
 
-let num func iter a b =
+let num func iter a b within =
     let f = 
         (match Parser.parseAll Lang.parse_exp func with 
         | value -> value
@@ -40,12 +45,10 @@ let num func iter a b =
             exit 1)
         |> Lang.eval
     in
-    let result = 
-        Bracketing.bisect_iterate (a, b) f 
-        |> Seq.take iter
-    in
+    let result = Bracketing.bisect_iterate (a, b) f in
     let i = ref 1 in
-    result 
+    within
+    |> Option.fold ~none:(Seq.take iter result) ~some:(fun w -> Bracketing.within w result)
     |> List.iter (fun result -> 
         Printf.printf "\t Iteration %d \n" !i;
         Bracketing.pp result;
@@ -54,5 +57,5 @@ let num func iter a b =
 
 let () = 
     Arg.parse options anonymous usage;
-    num !func !iter !a !b
+    num !func !iter !a !b !within
 
