@@ -32,10 +32,6 @@ let options = Arg.align
        ]
 
 let num func iter a b =
-    (* print_string func; 
-    print_int iter; 
-    print_float a; 
-    print_float b; *)
     let f = 
         (match Parser.parseAll Lang.parse_exp func with 
         | value -> value
