@@ -8,7 +8,7 @@ let pp { a; b; c; fa; fb; fc } =
     Printf.printf "f(a) = %f \t f(c) = %f \t f(b) = %f \n\n" fa fc fb
 
 let c_fp a b fa fb = 
-    b -. ((fb *. (fa -. fb)) /. (a -. b)) 
+    b -. ((fb *. (a -. b)) /. (fa -. fb)) 
 
 let c_bisect a b _ _ = (a +. b) /. 2.
 
