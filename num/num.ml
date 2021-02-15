@@ -72,6 +72,7 @@ let num func iter init within alg =
 
 let () = 
     Arg.parse options anonymous usage ;
+    (* TODO: remove this nasty code *)
     (match !algorithm with 
     | "bisection" | "FP" -> init := [!a; !b]
     | _ -> init := [!a]) ;
