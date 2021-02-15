@@ -35,9 +35,9 @@ let iterate (a, b) f ~algorithm =
 let rec within seq eps =
     let open Seq in 
     match seq () with 
-    | Cons ({ c = a } as x, xs) -> 
+    | Cons (x, xs) -> 
         (match xs () with 
-        | Cons ({ c = b } as y, rest) when Float.abs (b -. a) <= eps -> 
+        | Cons (y, rest) when Float.abs (y.c -. x.c) <= eps -> 
             [ x;y ] |> List.to_seq
         | _ -> Seq.cons x (within xs eps))
     | _ -> failwith "seq should be infinite"
