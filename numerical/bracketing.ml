@@ -1,43 +1,49 @@
 
-type result = 
-    { a : float; b : float; c : float; 
-      fa: float; fb: float; fc: float }
-
-let pp { a; b; c; fa; fb; fc } = 
-    Printf.printf "a = %f \t c = %f \t b = %f \n" a c b ; 
-    Printf.printf "f(a) = %f \t f(c) = %f \t f(b) = %f \n\n" fa fc fb
+type c_func = float -> float -> float -> float -> float
 
 let c_fp a b fa fb = 
     b -. ((fb *. (a -. b)) /. (fa -. fb)) 
 
 let c_bisect a b _ _ = (a +. b) /. 2.
 
-let bracket_with (a, b) f ~bracketer = 
-    let fa, fb = f a, f b in
-    let c = bracketer a b fa fb in
-    let fc = f c in
-    { a; b; c; fa; fb; fc }
+module Make (CF : sig val cf: c_func end) : Iterate.Algorithm = struct 
 
-let bisect = bracket_with ~bracketer:c_bisect
+    type result = 
+        { a : float; b : float; c : float; 
+        fa: float; fb: float; fc: float }
 
-let false_position = bracket_with ~bracketer:c_fp
+    type initial = float * float 
 
-let next { a; b; c; fa; fc; _ } = 
-    let fa_fc = fa *. fc in 
-    if fa_fc < 0. then (a, c) else (c, b)
+    let create_initial = function 
+        | [x;y] -> x, y 
+        | _ -> failwith "Expected exaclty two elements for initial"
 
-let iterate (a, b) f ~algorithm = 
-    (a, b)
-    |> Seq.unfold (fun endpoints ->  
-        let result = algorithm endpoints f in 
-        Some (result, next result))
+    let root { c; _ } = c
 
-let rec within seq eps =
-    let open Seq in 
-    match seq () with 
-    | Cons (x, xs) -> 
-        (match xs () with 
-        | Cons (y, _) when Float.abs (y.c -. x.c) <= eps -> 
-            [ x;y ] |> List.to_seq
-        | _ -> Seq.cons x (within xs eps))
-    | _ -> failwith "seq should be infinite"
+    let pp { a; b; c; fa; fb; fc } = 
+        Printf.printf "a = %f \t c = %f \t b = %f \n" a c b ; 
+        Printf.printf "f(a) = %f \t f(c) = %f \t f(b) = %f \n\n" fa fc fb
+
+    let bracket_with (a, b) f ~bracketer = 
+        let fa, fb = f a, f b in
+        let c = bracketer a b fa fb in
+        let fc = f c in
+        { a; b; c; fa; fb; fc }
+
+    let algorithm = bracket_with ~bracketer:CF.cf
+
+    let next { a; b; c; fa; fc; _ } = 
+        let fa_fc = fa *. fc in 
+        if fa_fc < 0. then (a, c) else (c, b)
+
+    (* let iterate (a, b) f  = 
+        (a, b)
+        |> Seq.unfold (fun endpoints ->  
+            let result = algorithm endpoints f in 
+            Some (result, next result)) *)
+
+end 
+
+module Bisection = Make (struct let cf = c_bisect end)
+
+module FalsePosition = Make (struct let cf = c_fp end)

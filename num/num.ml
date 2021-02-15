@@ -1,9 +1,8 @@
 open Numerical
 open Util
 
-let a = Stream.iter
-
 let func = ref ""
+let init : float list ref = ref [0.; 1.]
 let iter = ref 0 
 let a = ref 0. 
 let b = ref 0.
@@ -14,11 +13,7 @@ let handle_algorithm str = algorithm := str
 let usage = "Usage: num [options]"
 let anonymous str = ()
 let options = Arg.align 
-    [ ( "--method", 
-        Arg.Symbol (["bisection"; "FP"], handle_algorithm), 
-        " Specify the numerical analysis algorithm to use"); 
-      
-       ( "--function",
+    [ ( "--function",
          Arg.Set_string func, 
          " Specify a function to solve");
     
@@ -36,9 +31,17 @@ let options = Arg.align
        
        ( "-b",
          Arg.Set_float b, 
-         " Specify the right endpoint for a bisection") ]
+         " Specify the right endpoint for a bisection");
+        
+        ( "-x", 
+          Arg.Set_float a, 
+          " Specify the initial guess for newtons method");
+        
+        ( "--method", 
+          Arg.Symbol (["bisection"; "FP"; "newton"], handle_algorithm), 
+          " Specify the numerical analysis algorithm to use");   ]
 
-let num func iter a b within alg =
+let num func iter init within alg =
     let f = 
         (match Parser.parseAll Lang.parse_exp func with 
         | value -> value
@@ -47,23 +50,30 @@ let num func iter a b within alg =
             exit 1)
         |> Lang.eval
     in
-    let algorithm =
-        match alg with  
-        | "bisection" -> Bracketing.bisect
-        | "FP" -> Bracketing.false_position
-        | _ -> 
-            Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
-            exit 1
+    let module A =
+        (val 
+            match alg with  
+            | "bisection" -> (module Bracketing.Bisection)
+            | "FP" -> (module Bracketing.Bisection)
+            | "newton" -> (module Bracketing.Bisection)
+            | _ -> 
+                Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
+                exit 1
+            : Iterate.Algorithm)
     in
-    let result = Bracketing.iterate ~algorithm (a, b) f in
+    let module I = Iterate.Make (A) in
+    let result = I.iterate (I.create_initial init) f in 
     within
-    |> Option.fold ~none:(Seq.take iter result) ~some:(Bracketing.within result)
+    |> Option.fold ~none:(Seq.take iter result) ~some:(I.within result)
     |> Seq.iteri (fun index result -> 
         Printf.printf "\t Iteration %d \n" (succ index) ;
-        Bracketing.pp result ;
+        I.pp result ;
         Printf.printf "\n")
 
 let () = 
     Arg.parse options anonymous usage ;
-    num !func !iter !a !b !within !algorithm
+    (match !algorithm with 
+    | "bisection" | "FP" -> init := [!a; !b]
+    | _ -> init := [!a]) ;
+    num !func !iter !init !within !algorithm
 
