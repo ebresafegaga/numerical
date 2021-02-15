@@ -24,6 +24,6 @@ module Seq = struct
                 f n x;
                 aux next (n+1)
         in
-    aux seq 0
+        aux seq 0
 
 end
