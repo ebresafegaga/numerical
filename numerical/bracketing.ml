@@ -22,7 +22,7 @@ let bisect = bracket_with ~bracketer:c_bisect
 
 let false_position = bracket_with ~bracketer:c_fp
 
-let next { a; b; c; fa; fb; fc } = 
+let next { a; b; c; fa; fc; _ } = 
     let fa_fc = fa *. fc in 
     if fa_fc < 0. then (a, c) else (c, b)
 
@@ -37,7 +37,7 @@ let rec within seq eps =
     match seq () with 
     | Cons (x, xs) -> 
         (match xs () with 
-        | Cons (y, rest) when Float.abs (y.c -. x.c) <= eps -> 
+        | Cons (y, _) when Float.abs (y.c -. x.c) <= eps -> 
             [ x;y ] |> List.to_seq
         | _ -> Seq.cons x (within xs eps))
     | _ -> failwith "seq should be infinite"

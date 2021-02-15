@@ -16,5 +16,5 @@ module Seq :
     val head : 'a Seq.t -> 'a option
     val head_exn : 'a Seq.t -> 'a
     val take : int -> 'a t -> 'a Seq.t
-    val iteri : (int -> 'a -> 'b) -> 'a t -> unit
+    val iteri : (int -> 'a -> unit) -> 'a t -> unit
   end
