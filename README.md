@@ -1,5 +1,5 @@
 # Numerical Methods 
 
-![Build](https://github.com/ebresafegaga/numerical/workflows/Build/badge.svg)
+![Build Status](https://github.com/ebresafegaga/numerical/workflows/Build%20Status/badge.svg)
 
 WIP
