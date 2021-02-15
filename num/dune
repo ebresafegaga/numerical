@@ -1,4 +1,4 @@
 (executable
     (name num)
-    (libraries numerical util)
+    (libraries numerical language util)
     (flags -ccopt -static))

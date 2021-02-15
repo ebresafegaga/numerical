@@ -36,12 +36,6 @@ module Make (CF : sig val cf: c_func end) : Iterate.Algorithm = struct
         let fa_fc = fa *. fc in 
         if fa_fc < 0. then (a, c) else (c, b)
 
-    (* let iterate (a, b) f  = 
-        (a, b)
-        |> Seq.unfold (fun endpoints ->  
-            let result = algorithm endpoints f in 
-            Some (result, next result)) *)
-
 end 
 
 module Bisection = Make (struct let cf = c_bisect end)

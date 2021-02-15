@@ -1,5 +1,6 @@
 open Numerical
 open Util
+open Language
 
 let func = ref ""
 let init : float list ref = ref [0.; 1.]

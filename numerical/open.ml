@@ -29,20 +29,5 @@ let algorithm x f =
     let fx = f x in
     let x =  x -. (fx /. fx') in
     { x; fx; fx' = Some fx' }
-
-(* let iterate initial f = 
-    initial
-    |> Seq.unfold (fun x -> 
-        let result = newton x f in 
-        Some (result, result.x))
-
-let rec within seq eps =
-    let open Seq in 
-    match seq () with 
-    | Cons (x, xs) -> 
-        (match xs () with 
-        | Cons (y, _) when Float.abs (y.x -. x.x) <= eps -> 
-            [ x;y ] |> List.to_seq
-        | _ -> Seq.cons x (within xs eps))
-    | _ -> failwith "seq should be infinite" *)
+    
 end 
