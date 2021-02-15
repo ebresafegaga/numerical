@@ -54,8 +54,8 @@ let num func iter init within alg =
         (val 
             match alg with  
             | "bisection" -> (module Bracketing.Bisection)
-            | "FP" -> (module Bracketing.Bisection)
-            | "newton" -> (module Bracketing.Bisection)
+            | "FP" -> (module Bracketing.FalsePosition)
+            | "newton" -> (module Open.Newton)
             | _ -> 
                 Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
                 exit 1
