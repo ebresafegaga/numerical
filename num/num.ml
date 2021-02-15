@@ -1,18 +1,21 @@
 open Numerical
 open Util
 
+let a = Stream.iter
+
 let func = ref ""
 let iter = ref 0 
 let a = ref 0. 
 let b = ref 0.
 let within : float option ref = ref None
-
+let algorithm = ref ""
+let handle_algorithm str = algorithm := str
 
 let usage = "Usage: num [options]"
 let anonymous str = ()
 let options = Arg.align 
     [ ( "--method", 
-        Arg.Symbol (["bisection"; "FP"], fun str -> ()), 
+        Arg.Symbol (["bisection"; "FP"], handle_algorithm), 
         " Specify the numerical analysis algorithm to use"); 
       
        ( "--function",
@@ -33,19 +36,26 @@ let options = Arg.align
        
        ( "-b",
          Arg.Set_float b, 
-         " Specify the right endpoint for a bisection")
-       ]
+         " Specify the right endpoint for a bisection") ]
 
-let num func iter a b within =
+let num func iter a b within alg =
     let f = 
         (match Parser.parseAll Lang.parse_exp func with 
         | value -> value
         | exception Failure msg -> 
-            Printf.printf "Error while parsing function \n"; 
+            Printf.eprintf "Error while parsing function \n"; 
             exit 1)
         |> Lang.eval
     in
-    let result = Bracketing.bisect_iterate (a, b) f in
+    let algorithm =
+        match alg with  
+        | "bisection" -> Bracketing.bisect
+        | "FP" -> Bracketing.false_position
+        | _ -> 
+            Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
+            exit 1
+    in
+    let result = Bracketing.iterate ~algorithm (a, b) f in
     within
     |> Option.fold ~none:(Seq.take iter result) ~some:(Bracketing.within result)
     |> Seq.iteri (fun index result -> 
@@ -54,6 +64,6 @@ let num func iter a b within =
         Printf.printf "\n")
 
 let () = 
-    Arg.parse options anonymous usage;
-    num !func !iter !a !b !within
+    Arg.parse options anonymous usage ;
+    num !func !iter !a !b !within !algorithm
 
