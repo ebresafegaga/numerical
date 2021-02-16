@@ -9,6 +9,13 @@ let a = ref 0.
 let b = ref 0.
 let within : float option ref = ref None
 let algorithm = ref ""
+
+let init_algorithm () = 
+    (* Still not happy about this *)
+    match !algorithm with 
+    | "bisection" | "FP" | "secant" -> init := [!a; !b]
+    | _ -> init := [!a]
+
 let handle_algorithm str = algorithm := str
 
 let usage = "Usage: num [options]"
@@ -77,9 +84,6 @@ let num func iter init within alg =
 
 let () = 
     Arg.parse options anonymous usage ;
-    (* TODO: remove this nasty code *)
-    (match !algorithm with 
-    | "bisection" | "FP" | "secant" -> init := [!a; !b]
-    | _ -> init := [!a]) ;
+    init_algorithm () ;
     num !func !iter !init !within !algorithm
 
