@@ -13,6 +13,9 @@ let handle_algorithm str = algorithm := str
 
 let usage = "Usage: num [options]"
 let anonymous str = ()
+
+let algorithms = ["bisection"; "FP"; "newton"; "secant"]
+
 let options = Arg.align 
     [ ( "--function",
          Arg.Set_string func, 
@@ -39,7 +42,7 @@ let options = Arg.align
           " Specify the initial guess for newtons method");
         
         ( "--method", 
-          Arg.Symbol (["bisection"; "FP"; "newton"], handle_algorithm), 
+          Arg.Symbol (algorithms, handle_algorithm), 
           " Specify the numerical analysis algorithm to use");   ]
 
 let num func iter init within alg =
@@ -57,6 +60,7 @@ let num func iter init within alg =
             | "bisection" -> (module Bracketing.Bisection)
             | "FP" -> (module Bracketing.FalsePosition)
             | "newton" -> (module Open.Newton)
+            | "secant" -> (module Open.Secant)
             | _ -> 
                 Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
                 exit 1
@@ -75,7 +79,7 @@ let () =
     Arg.parse options anonymous usage ;
     (* TODO: remove this nasty code *)
     (match !algorithm with 
-    | "bisection" | "FP" -> init := [!a; !b]
+    | "bisection" | "FP" | "secant" -> init := [!a; !b]
     | _ -> init := [!a]) ;
     num !func !iter !init !within !algorithm
 
