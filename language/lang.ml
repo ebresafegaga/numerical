@@ -1,3 +1,4 @@
+open Util
 (*
     THE ALGEBRAIC LANGUAGE
     This language doesn't handle precedence, so you have to be explicit about them with parens 
@@ -59,7 +60,7 @@ let primary exp =
     (Variable <$ (char 'x')) <|>
     (constant <$> number) 
 
-let parse_exp = 
+let exp = 
     fix @@ fun exp -> 
         (cos' <$> (string "cos") *> spaces *> exp) <|>
         (sin' <$> (string "sin") *> spaces *> exp) <|> 

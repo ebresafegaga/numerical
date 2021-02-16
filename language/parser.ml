@@ -1,3 +1,4 @@
+open Util
 
 (*
    A MINIMAL PARSER COMBINATOR LIBRARY 
@@ -6,16 +7,6 @@
 (* Some utilities *)
 
 (* function composition: g . f *)
-let (>>) f g a = a |> f |> g
-
-(* Applicative-order fixed point combinator *)
-let rec fix f = f (fun x -> (fix f) x)
-
-module String = struct 
-    include String
-    let to_list = String.to_seq >> List.of_seq
-    let of_list = List.to_seq >> String.of_seq
-end
 
 type 'a parser = string -> ('a * string) option
 

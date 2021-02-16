@@ -54,12 +54,11 @@ let options = Arg.align
 
 let num func iter init within alg =
     let f = 
-        (match Parser.parseAll Lang.parse_exp func with 
-        | value -> value
+        (match Parser.parseAll Lang.exp func with 
+        | value -> Lang.eval value
         | exception Failure msg -> 
             Printf.eprintf "Error while parsing function \n"; 
             exit 1)
-        |> Lang.eval
     in
     let module A =
         (val 
