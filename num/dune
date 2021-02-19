@@ -1,4 +1,5 @@
 (executable
     (name num)
     (libraries numerical language util)
-    (flags -ccopt -static))
+    (flags -ccopt -static)
+    (modes byte exe))

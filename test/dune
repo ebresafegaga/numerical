@@ -1,3 +1,4 @@
 (executable
  (name main)
- (libraries alcotest qcheck qcheck-alcotest numerical))
+ (libraries util str alcotest qcheck qcheck-alcotest numerical)
+ (modes byte exe))

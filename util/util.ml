@@ -11,11 +11,11 @@ module Seq = struct
         | Cons (x, _) -> x
         | _ -> failwith "head of empty sequence"
 
-    let rec take n seq = 
+    let rec take n seq () = 
         match seq (), n with 
-        | _, 0 -> Seq.empty
-        | Cons (x, xs), n -> cons x (take (pred n) xs)
-        | Nil, _ -> Seq.empty (* This is not okay! *)
+        | _, 0 -> Nil
+        | Cons (x, xs), n -> Cons (x, (take (pred n) xs))
+        | Nil, _ -> Nil
     
     let iteri f seq =
         let rec aux seq n = match seq () with
@@ -25,6 +25,11 @@ module Seq = struct
                 aux next (n+1)
         in
         aux seq 0
+    
+    let rec combine_with ~f xs ys () = 
+        match xs (), ys () with 
+        | Cons (x, xs), Cons (y, ys) -> Cons ((f x y), (combine_with ~f xs ys))
+        | Nil, _ | _, Nil -> Nil
 
 end
 

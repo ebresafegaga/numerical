@@ -17,6 +17,7 @@ module Seq :
     val head_exn : 'a Seq.t -> 'a
     val take : int -> 'a t -> 'a Seq.t
     val iteri : (int -> 'a -> 'b) -> 'a t -> unit
+    val combine_with : f:('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c Seq.t
   end
 val ( >> ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
 module String :

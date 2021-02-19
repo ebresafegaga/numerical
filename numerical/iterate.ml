@@ -16,16 +16,15 @@ module type Intf = sig
     val iterate : initial -> (float -> float) -> result Seq.t
 end
 
-module Make (A : Algorithm) : Intf = struct 
-    include A 
+module Make (A : Algorithm) (E : Error.S) : Intf = struct 
+    include A
 
     let rec within seq eps =
         let open Seq in 
         match seq () with 
         | Cons (x, xs) -> 
             (match xs () with 
-            | Cons (y, _) when Float.abs (root y -. root x) <= eps -> 
-                [ x;y ] |> List.to_seq
+            | Cons (y, _) when E.within ~eps (root x) (root y) -> List.to_seq [x;y]
             | _ -> Seq.cons x (within xs eps))
         | _ -> failwith "seq should be infinite"
     
@@ -34,4 +33,12 @@ module Make (A : Algorithm) : Intf = struct
         |> Seq.unfold (fun prev ->  
             let result = algorithm prev f in 
             Some (result, next result))
+    
+    let error initial f = 
+        (initial, 0.) 
+        |> Seq.unfold (fun (prev, r0) ->
+            let result = algorithm prev f in 
+            let r1 = root result in
+            let err = E.calc r0 r1 in 
+            Some (err, (next result, r1)))
 end

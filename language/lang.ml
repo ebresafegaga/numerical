@@ -23,6 +23,9 @@ type exp =
     | Pow of exp * exp 
     | Cos of exp 
     | Sin of exp
+    (* | Log of exp *)
+    | Pi 
+    | E
 
 let mul a b = Mul (a, b)
 let sum a b = Sum (a, b) 
@@ -31,6 +34,8 @@ let pow a x = Pow (a, x)
 let sin' x = Sin x
 let cos' x = Cos x
 let constant x = Constant x
+
+let e = 2.71828182845904509
 
 let rec eval exp x =
     let eval' = Fun.flip eval x in
@@ -43,6 +48,8 @@ let rec eval exp x =
     | Pow (a, x) -> eval' a ** eval' x
     | Cos a -> cos (eval' a) 
     | Sin a -> sin (eval' a)
+    | Pi -> Float.pi
+    | E -> e
 
 (* PARSING *)
 
@@ -58,7 +65,9 @@ let binary exp =
 let primary exp = 
     (char '(' *> spaces *> exp <* spaces  <* char ')') <|>
     (Variable <$ (char 'x')) <|>
-    (constant <$> number) 
+    (constant <$> number) <|>
+    (E <$ (char 'e')) <|> 
+    (Pi <$ (string "pi"))
 
 let exp = 
     fix @@ fun exp -> 

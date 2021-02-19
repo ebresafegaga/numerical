@@ -4,13 +4,13 @@ type c_func = float -> float -> float -> float -> float
 let c_fp a b fa fb = 
     b -. ((fb *. (a -. b)) /. (fa -. fb)) 
 
-let c_bisect a b _ _ = (a +. b) /. 2.
+let c_bisect a b (_:float) (_:float) = (a +. b) /. 2.
 
 module Make (CF : sig val cf: c_func end) : Iterate.Algorithm = struct 
 
     type result = 
         { a : float; b : float; c : float; 
-        fa: float; fb: float; fc: float }
+          fa: float; fb: float; fc: float }
 
     type initial = float * float 
 
@@ -29,7 +29,7 @@ module Make (CF : sig val cf: c_func end) : Iterate.Algorithm = struct
         let c = bracketer a b fa fb in
         let fc = f c in
         { a; b; c; fa; fb; fc }
-
+    
     let algorithm = bracket_with ~bracketer:CF.cf
 
     let next { a; b; c; fa; fc; _ } = 

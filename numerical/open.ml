@@ -27,12 +27,13 @@ let algorithm x f =
     let x =  x -. (fx /. fx') in
     { x; fx; fx' }
     
-end 
-
+end
 
 module Secant : Iterate.Algorithm = struct 
 
-    type result = { x0: float; x1: float ; fx0: float; fx1: float }
+    type result = 
+        { x0: float; x1: float; 
+          fx0: float; fx1: float }
     
     type initial = float * float
     
@@ -55,4 +56,4 @@ module Secant : Iterate.Algorithm = struct
         let x = x1 -. fx1 *. ((x1 -. x0) /. (fx1 -. fx0)) in
         { x0 = x1; x1 = x; fx0; fx1 }
         
-    end 
+end 

@@ -3,7 +3,7 @@ open Util
 open Language
 
 let func = ref ""
-let init : float list ref = ref [0.; 1.]
+let init : float list ref = ref []
 let iter = ref 0 
 let a = ref 0. 
 let b = ref 0.
@@ -50,15 +50,15 @@ let options = Arg.align
         
         ( "--method", 
           Arg.Symbol (algorithms, handle_algorithm), 
-          " Specify the numerical analysis algorithm to use");   ]
+          " Specify the numerical analysis algorithm to use"); ]
 
 let num func iter init within alg =
     let f = 
-        (match Parser.parseAll Lang.exp func with 
+        match Parser.parseAll Lang.exp func with 
         | value -> Lang.eval value
-        | exception Failure msg -> 
-            Printf.eprintf "Error while parsing function \n"; 
-            exit 1)
+        | exception Failure err -> 
+            Printf.eprintf "Error while parsing function \n" ; 
+            exit 1
     in
     let module A =
         (val 
@@ -72,13 +72,14 @@ let num func iter init within alg =
                 exit 1
             : Iterate.Algorithm)
     in
-    let module I = Iterate.Make (A) in
+    let module I = Iterate.Make (A) (Error.Absolute) in
     let result = I.iterate (I.create_initial init) f in 
     within
     |> Option.fold ~none:(Seq.take iter result) ~some:(I.within result)
     |> Seq.iteri (fun index result -> 
         Printf.printf "\t Iteration %d \n" (succ index) ;
         I.pp result ;
+        Printf.printf "Error = \n\n" ;
         Printf.printf "\n")
 
 let () = 
