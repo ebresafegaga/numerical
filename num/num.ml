@@ -9,6 +9,7 @@ let a = ref 0.
 let b = ref 0.
 let within : float option ref = ref None
 let algorithm = ref ""
+let error_alg = ref ""
 
 let init_algorithm () = 
     (* Still not happy about this *)
@@ -18,7 +19,7 @@ let init_algorithm () =
 
 let handle_algorithm str = algorithm := str
 
-let handle_error str = ()
+let handle_error str = error_alg := str
 
 let usage = "Usage: num [options]"
 let anonymous str = ()
@@ -59,7 +60,7 @@ let options = Arg.align
           Arg.Symbol (errors, handle_error), 
           " Specify how the error should be calculated to use")  ]
 
-let num func iter init within alg =
+let num func iter init within alg error_alg =
     let f = 
         match Parser.parseAll Lang.exp func with 
         | value -> Lang.eval value
@@ -77,7 +78,13 @@ let num func iter init within alg =
             Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
             exit 1
     in
-    let module I = Iterate.Make (Algorithm) (Error.Relative) in
+    let (module Error : Error.Error) = 
+        match error_alg with 
+        | "absolute" -> (module Error.Absolute)
+        | "relative" -> (module Error.Relative)
+        | _ -> (module Error.Absolute) (* defaults to abolute error *)
+    in
+    let module I = Iterate.Make (Algorithm) (Error) in
     let result = I.iterate (I.create_initial init) f in 
     let error = I.error (I.create_initial init) f in
     within
@@ -92,4 +99,4 @@ let num func iter init within alg =
 let () = 
     Arg.parse options anonymous usage ;
     init_algorithm () ;
-    num !func !iter !init !within !algorithm
+    num !func !iter !init !within !algorithm !error_alg

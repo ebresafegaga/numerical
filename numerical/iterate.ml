@@ -20,14 +20,14 @@ module Trivial : Algorithm = struct
     let root _ = Float.zero
 end
 
-module type Intf = sig 
+module type Iterate= sig 
     include Algorithm
     val within : result Seq.t -> float -> result Seq.t
     val iterate : initial -> (float -> float) -> result Seq.t
     val error : initial -> (float -> float) -> float Seq.t
 end
 
-module Make (A : Algorithm) (E : Error.S) : Intf = struct 
+module Make (A : Algorithm) (E : Error.Error) : Iterate = struct 
     include A
 
     let rec within seq eps =
