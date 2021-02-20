@@ -1,4 +1,5 @@
-type 'a parser = string -> ('a * string) option
+type 'a parser
+val fix : ('a parser -> 'a parser) -> 'a parser
 val fail : 'a parser
 val pure : 'a -> 'a parser
 val charp : (char -> bool) -> char parser

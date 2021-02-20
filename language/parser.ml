@@ -10,6 +10,9 @@ open Util
 
 type 'a parser = string -> ('a * string) option
 
+(* Applicative-order fixed point combinator *)
+let rec fix f = f (fun x -> (fix f) x)
+
 let fail : 'a parser = Fun.const None 
 
 let pure (x: 'a) : 'a parser = fun str -> Some (x, str)

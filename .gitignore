@@ -2,3 +2,4 @@ _build
 .vscode
 *.cmi
 *.cmo
+*.cmx

@@ -1,6 +1,0 @@
-EXCLUDE_QUERY_DIR
-B ../_build/default/language/.language.objs/byte
-B ../_build/default/util/.util.objs/byte
-S .
-S ../util
-FLG -open Language -w -40

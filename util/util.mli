@@ -74,4 +74,3 @@ module String :
     val to_list : String.t -> char list
     val of_list : char list -> String.t
   end
-val fix : (('a -> 'b) -> 'a -> 'b) -> 'a -> 'b

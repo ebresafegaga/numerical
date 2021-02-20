@@ -18,10 +18,13 @@ let init_algorithm () =
 
 let handle_algorithm str = algorithm := str
 
+let handle_error str = ()
+
 let usage = "Usage: num [options]"
 let anonymous str = ()
 
 let algorithms = ["bisection"; "FP"; "newton"; "secant"]
+let errors = ["absolute";"relative"]
 
 let options = Arg.align 
     [ ( "--function",
@@ -50,40 +53,43 @@ let options = Arg.align
         
         ( "--method", 
           Arg.Symbol (algorithms, handle_algorithm), 
-          " Specify the numerical analysis algorithm to use"); ]
+          " Specify the numerical analysis algorithm to use");
+        
+        ( "--error", 
+          Arg.Symbol (errors, handle_error), 
+          " Specify how the error should be calculated to use")  ]
 
 let num func iter init within alg =
     let f = 
         match Parser.parseAll Lang.exp func with 
         | value -> Lang.eval value
-        | exception Failure err -> 
+        | exception Failure e -> 
             Printf.eprintf "Error while parsing function \n" ; 
             exit 1
     in
-    let module A =
-        (val 
-            match alg with  
-            | "bisection" -> (module Bracketing.Bisection)
-            | "FP" -> (module Bracketing.FalsePosition)
-            | "newton" -> (module Open.Newton)
-            | "secant" -> (module Open.Secant)
-            | _ -> 
-                Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
-                exit 1
-            : Iterate.Algorithm)
+    let (module Algorithm : Iterate.Algorithm) =
+        match alg with  
+        | "bisection" -> (module Bracketing.Bisection)
+        | "FP" -> (module Bracketing.FalsePosition)
+        | "newton" -> (module Open.Newton)
+        | "secant" -> (module Open.Secant)
+        | _ -> 
+            Printf.eprintf "Please specify a numerical algorithm to use \n" ; 
+            exit 1
     in
-    let module I = Iterate.Make (A) (Error.Absolute) in
+    let module I = Iterate.Make (Algorithm) (Error.Relative) in
     let result = I.iterate (I.create_initial init) f in 
+    let error = I.error (I.create_initial init) f in
     within
     |> Option.fold ~none:(Seq.take iter result) ~some:(I.within result)
-    |> Seq.iteri (fun index result -> 
+    |> Seq.combine_with ~f:(fun a b -> (a, b)) error
+    |> Seq.iteri (fun index (error, result) -> 
         Printf.printf "\t Iteration %d \n" (succ index) ;
         I.pp result ;
-        Printf.printf "Error = \n\n" ;
+        Printf.printf "Error = %f\n\n" error ;
         Printf.printf "\n")
-
+    
 let () = 
     Arg.parse options anonymous usage ;
     init_algorithm () ;
     num !func !iter !init !within !algorithm
-

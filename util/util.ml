@@ -40,6 +40,3 @@ module String = struct
     let to_list = String.to_seq >> List.of_seq
     let of_list = List.to_seq >> String.of_seq
 end
-
-(* Applicative-order fixed point combinator *)
-let rec fix f = f (fun x -> (fix f) x)

@@ -35,7 +35,6 @@ module Make (CF : sig val cf: c_func end) : Iterate.Algorithm = struct
     let next { a; b; c; fa; fc; _ } = 
         let fa_fc = fa *. fc in 
         if fa_fc < 0. then (a, c) else (c, b)
-
 end 
 
 module Bisection = Make (struct let cf = c_bisect end)
