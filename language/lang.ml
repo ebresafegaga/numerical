@@ -29,6 +29,7 @@ type exp =
     | E
 
 let mul a b = Mul (a, b)
+let div a b = Div (a, b)
 let sum a b = Sum (a, b) 
 let diff a b = Diff (a, b)
 let pow a x = Pow (a, x) 
@@ -59,7 +60,7 @@ open Parser
 
 let binary exp = 
     let mulp = mul <$ (char '*') in
-    let divp = mul <$ (char '/') in
+    let divp = div <$ (char '/') in
     let sump = sum <$ (char '+') in
     let diffp = diff <$ (char '-') in
     let powp = pow <$ (char '^') in 
