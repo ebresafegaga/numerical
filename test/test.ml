@@ -1,5 +1,5 @@
 open Util
-
+(* 
 let is_even n = n mod 2 = 0
 
 let rec is_sorted = function 
@@ -62,4 +62,22 @@ let o =
         ~actual:"string"
 
 
-let d x = Alcotest.check (Alcotest.float Float.epsilon)
+let d x = Alcotest.check (Alcotest.float Float.epsilon) *)
+
+
+let tests = [Lang_test.commutativity]
+
+let suite = 
+    tests 
+    |> List.map QCheck_alcotest.to_alcotest
+
+let suite = 
+    Alcotest.run "Numerical" [
+        "Language", suite 
+    ]
+
+(* let result = 
+    QCheck_runner.run_tests
+        ~verbose:true
+        ~colors:true
+        tests *)
