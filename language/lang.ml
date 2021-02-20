@@ -18,6 +18,7 @@ type exp =
     | Constant of float 
     | Variable
     | Mul of exp * exp 
+    | Div of exp * exp 
     | Sum of exp * exp 
     | Diff of exp * exp 
     | Pow of exp * exp 
@@ -43,6 +44,7 @@ let rec eval exp x =
     | Constant value -> value 
     | Variable -> x  
     | Mul (a, b) -> eval' a *. eval' b  
+    | Div (a, b) -> eval' a /. eval' b 
     | Sum (a, b) -> eval' a +. eval' b 
     | Diff (a, b) -> eval' a -. eval' b
     | Pow (a, x) -> eval' a ** eval' x
@@ -57,10 +59,11 @@ open Parser
 
 let binary exp = 
     let mulp = mul <$ (char '*') in
+    let divp = mul <$ (char '/') in
     let sump = sum <$ (char '+') in
     let diffp = diff <$ (char '-') in
     let powp = pow <$ (char '^') in 
-    chain (mulp <|> sump <|> diffp <|> powp) exp
+    chain (mulp <|> divp <|> sump <|> diffp <|> powp) exp
 
 let primary exp = 
     (char '(' *> spaces *> exp <* spaces  <* char ')') <|>
