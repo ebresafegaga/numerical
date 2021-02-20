@@ -24,7 +24,7 @@ type exp =
     | Pow of exp * exp 
     | Cos of exp 
     | Sin of exp
-    (* | Log of exp *)
+    | Log of exp
     | Pi 
     | E
 
@@ -35,6 +35,7 @@ let diff a b = Diff (a, b)
 let pow a x = Pow (a, x) 
 let sin' x = Sin x
 let cos' x = Cos x
+let log' x = Log x
 let constant x = Constant x
 
 let e = 2.71828182845904509
@@ -53,6 +54,7 @@ let rec eval exp x =
     | Sin a -> sin (eval' a)
     | Pi -> Float.pi
     | E -> e
+    | Log x -> log (eval' x)
 
 (* PARSING *)
 
@@ -77,4 +79,5 @@ let exp =
     fix @@ fun exp -> 
         (cos' <$> (string "cos") *> spaces *> exp) <|>
         (sin' <$> (string "sin") *> spaces *> exp) <|> 
+        (log' <$> (string "log") *> spaces *> exp) <|> 
         (binary (spaces *> (primary exp) <* spaces)) 

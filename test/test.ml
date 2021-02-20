@@ -60,3 +60,6 @@ let o =
         ~msg:""
         ~expected:("stri" ^ "ng")
         ~actual:"string"
+
+
+let d x = Alcotest.check (Alcotest.float Float.epsilon)
